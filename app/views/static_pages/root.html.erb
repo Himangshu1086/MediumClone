@@ -1,0 +1,19 @@
+<% if current_user %>
+  <script type="text/javascript">
+    window.currentUser = <%= render(
+      "api/users/user.json.jbuilder",
+      user: current_user
+    ).html_safe %>
+  </script>
+<% end %>
+
+<script type="text/javascript">
+  window.clap = "<%= image_url('clap.png') %>"
+  window.modalImage = "<%= image_url('modalImage.png') %>"
+  window.search = "<%= image_url('search.png') %>"
+  window.bookmarkOpen = "<%= image_url('bookmark-regular.svg') %>"
+  window.bookmarkSolid = "<%= image_url('bookmark-solid.svg') %>"
+  window.editImage = "<%= image_url('edit.svg') %>"
+</script>
+
+<main id="root"></main>
