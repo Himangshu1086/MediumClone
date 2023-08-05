@@ -10,26 +10,26 @@ function UserPost() {
 
   const navigate = useNavigate();
 
-  // const [userDetail , setUserDetail] = useState()
-  // const [loading , setLoading ] = useState(false)
+  const [userDetail , setUserDetail] = useState()
+  const [loading , setLoading ] = useState(false)
 
-  // const fetchUserDetail = async() =>{
+  const fetchUserDetail = async() =>{
 
 
-  //     const res = await fetch("/getUserDetail" , {
-  //         method:"GET" ,
-  //         headers:{
-  //             "Content-Type":"application/json",
-  //             "id":user.id
-  //         }
-  //     });
-  //     const result = await  res.json();
-  //     setUserDetail(result);
-  //     setLoading(false);
-  // }
-  // useEffect(()=>{
-  //   fetchUserDetail();
-  // },[user])
+      const res = await fetch("/getUserDetail" , {
+          method:"GET" ,
+          headers:{
+              "Content-Type":"application/json",
+              "id":user.id
+          }
+      });
+      const result = await  res.json();
+      setUserDetail(result);
+      setLoading(false);
+  }
+  useEffect(()=>{
+    fetchUserDetail();
+  },[user])
 
 
   //edit handle

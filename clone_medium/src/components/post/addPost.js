@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 export default function AddPost() {
 
 
+  // HANDLE OF ADD POST
+  
     // const addPost = async(values , postdata )=>{
 
     //     const expt = await fetch("/addPost" ,{
@@ -39,7 +41,39 @@ export default function AddPost() {
     //       }
     // }
 
+
+    //HANDLE SAVE AS DRAFT
+
+    // const addToDraft = async(formData , postdata )=>{
+
+    //     const expt = await fetch("/saveDraft" ,{
+    //         method:"POST" ,
+    //         headers:{
+    //             "Content-Type":"application/json"
+    //         },
+    //         body:JSON.stringify({formData , postdata})
+    //       });
+        
+    //       const data = await expt.json();
+          
+    //       if(data.status === 501 || !data)
+    //       {
+    //         window.alert("Invalid Credentials");
+    //         console.log("Invalid Credentials");
+    //     }
+    //         if(data.error){
+    //           window.alert("Invalid Credentials")
+    //         }
+    //       else
+    //       {
+    //           console.log("login successful");
+    //           nagivate.("/");
+              
+    //       }
+    // }
+
     const [postdata , setPostdata] = useState('')
+
 
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
@@ -69,6 +103,13 @@ export default function AddPost() {
           action.resetForm();
         },
       });
+
+
+      const handleSaveForDraft = () =>{
+          // addToDraft(formData , postdata);
+      }
+
+
 
       console.log(postdata , formData)
 
@@ -171,6 +212,9 @@ export default function AddPost() {
                     </button>
                   </div>
                 </form>
+                <button className="input-button mt-10" onClick={handleSaveForDraft} type="submit">
+                      Save as Draft
+                    </button>
         </div>
 
 
