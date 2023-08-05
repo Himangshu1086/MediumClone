@@ -5,10 +5,30 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { UserContext } from "../contextApi/contextApi";
 
+
+
+const loadScript = (src) =>{
+
+  return new Promise( (resolve) =>{
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = () =>{
+      resolve(true)
+    }
+    
+    script.onerror = ()=>{
+      resolve(false)
+    }
+    document.body.appendChild(script)
+ 
+  } )
+}
+
+
 const Navbar = () => {
 
   const {checkUser , user} = useContext(UserContext)
-  
+  const navigate = useNavigate();
   const cookies = new Cookies();
   const [scrolled, setScrolled] = useState(false);
   // const [checkUser , setCheckUser] = useState(true);
@@ -60,6 +80,44 @@ const Navbar = () => {
 
 
 
+
+
+
+
+  const handleRazorpay = async( amount )=>{
+
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+    if(!res)
+    {
+      alert("razorpay failed to load")
+      return
+    }
+
+    const options = {
+      key: "rzp_test_ZVmoR7VianmWFt",
+      amount: amount.toString(),
+      currency: 'INR',
+      name: "Soumya Corp.",
+      description: "Test Transaction",
+      // order_id: "sfvskvfdksfv",
+      handler: async function (response) {
+        console.log(response.razorpay_payment_id)
+        // console.log(response.razorpay_order_id)
+        console.log(response.razorpay_signature)
+      },
+      prefill: {
+          name: "Soumya Dey",
+          email: "SoumyaDey@example.com",
+          contact: "9999999999",
+      }
+  };
+
+  const rzp = new window.Razorpay(options)
+  rzp.open()
+}
+
+
+
   //logout function
 const logout = ()=>{
   cookies.remove("token");
@@ -84,7 +142,7 @@ const logout = ()=>{
               Medium
             </span>
           </Link>
-          <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+          <div class="hidden w-full md:block md:w-auto">
             <ul class="font-medium flex flex-row p-4">
               <li>
                 <Link
@@ -117,6 +175,14 @@ const logout = ()=>{
                   class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-blue-950 hover:bg-blue-900 text-white rounded-3xl "
                 >
                   <span className="p-10 rounded-2xl">Sign In</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to=""
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-green-700 hover:bg-green-600 text-white rounded-3xl "
+                >
+                  <span className="p-10 rounded-2xl" onClick={()=>{handleRazorpay(300)}}  >Pay</span>
                 </Link>
               </li>
 

@@ -137,6 +137,9 @@ function PostDetail() {
   console.log(post);
 
 
+
+
+
   // if(loading)
   // return <>Loading...</>
 

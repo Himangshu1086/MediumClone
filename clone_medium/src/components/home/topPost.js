@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import image from '../../styles/image.webp'
 import { Link } from 'react-router-dom';
 import '../../index.css'
 function TopPost() {
 
 
-  const posts = [
+  const postss = [
     {
       id: "1",
       Title: "Special Report: Extreme Heat and Human Health",
@@ -80,6 +80,35 @@ function TopPost() {
   ];
 
 
+    // const fetchPosts = async() =>{
+  //     const res = await fetch("/getPosts" , {
+  //         method:"GET" ,
+  //         headers:{
+  //             "Content-Type":"application/json",
+  //             // "id":id
+  //         }
+  //     });
+
+  //     const result = await  res.json();
+  //     setPosts(result);
+  //     setLoading(false);
+  // }
+
+  const [posts , setPosts ] = useState('')
+  const [loading , setLoading] = useState(true);
+
+
+  useEffect(() => {
+    setPosts(postss)
+    setLoading(false)
+  // fetchPosts()
+  
+}, [])
+
+
+  if(loading)
+  return <>Loading...</>
+
   return (
     <div>
        <h1 className='text-blue-950 font-bold text-3xl mb-5'>Top Trending Articles</h1>
@@ -115,12 +144,8 @@ function TopPost() {
                     <span className="mr-3 font-bold text-blue-500">{post.Topic}</span>
                   </div>
                 </div>
-
-
-
-
-
-              </Link>
+            
+            </Link>
             );
           })}
         </div>

@@ -16,7 +16,7 @@ import OthersProfile from './components/profile/OthersProfile';
 import QuickLinkPage from './components/profile/quickLinkPage';
 import EditPost from './components/post/editPost';
 import ProtectedRoute from './components/protected_route/protectRoute';
-
+import PaymentProtect from './components/protected_route/paymentProtect'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -42,7 +42,9 @@ root.render(
         <Route exact path='/' element={<ProtectedRoute/>}>
           <Route path='/write' element = {<AddPost/>}/>
         </Route>
-        <Route path='/:id' element={<PostDetail/>}/>
+        <Route exact path='/' element={<PaymentProtect/>}>
+          <Route path='/:id' element={<PostDetail/>}/>
+        </Route>
        <Route exact path='/' element={<ProtectedRoute/>}>
           <Route exact path='/:userId/:link' element={<QuickLinkPage/>}/>
         </Route>
