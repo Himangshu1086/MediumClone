@@ -1,7 +1,69 @@
-import React from 'react'
+
+import React, { useContext, useEffect, useState } from 'react'
 import image from '../../styles/image.webp'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../contextApi/contextApi';
+
 function UserPost() {
+
+  const {checkUser , user } = useContext(UserContext)
+
+  const navigate = useNavigate();
+
+  // const [userDetail , setUserDetail] = useState()
+  // const [loading , setLoading ] = useState(false)
+
+  // const fetchUserDetail = async() =>{
+
+
+  //     const res = await fetch("/getUserDetail" , {
+  //         method:"GET" ,
+  //         headers:{
+  //             "Content-Type":"application/json",
+  //             "id":user.id
+  //         }
+  //     });
+  //     const result = await  res.json();
+  //     setUserDetail(result);
+  //     setLoading(false);
+  // }
+  // useEffect(()=>{
+  //   fetchUserDetail();
+  // },[user])
+
+
+  //edit handle
+  const handleEdit = (post)=>{
+    navigate('/editpost' , {state :post} )
+  };
+
+
+
+  // Delete handle
+  const handleDelete = async (id) =>{
+    console.log(id)
+    
+    try {
+      // Send a DELETE request to your server to remove the post from the database
+      const response = await fetch("/deletePost", {
+        method: 'DELETE',
+        headers:{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer your-access-token',
+          'id':id
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the post');
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    };
 
 
     const posts = [
@@ -62,13 +124,13 @@ function UserPost() {
           <div className="flex flex-col justify-center items-start mr-10 ">
           {posts.map((post) => {
             return (
-              <Link to ={`/${post.id}`} className="flex p-10 justify-center items-center w-full  mb-8 bg-gray-100 shadow-md shadow-gray-300 hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95">
+              <div className="flex p-10 justify-center items-center w-full  mb-8 bg-gray-100 shadow-md shadow-gray-300 hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95">
                 <div className="p-4 m-4 rounded-md w-full">
                   <div className="w-full text-left pr-10">
                     <h1 className="font-bold text-4xl">{post.Title}</h1>
                   </div>
                   <div className="w-full text-justify mt-1 mb-1 pr-10 h-16">
-                    <p className="text-gray-600">{post.postData}</p>
+                    <p className="text-gray-600 w-4/5">{post.postData}<Link to={`/${post.id}`} className='ml-5 text-red-500'>Read More</Link></p>
                   </div>
 
                   <div className="w-full mt-5">
@@ -78,8 +140,8 @@ function UserPost() {
                     <span className="mr-3 font-bold text-2xl text-blue-500">Total Comments : {(post.Comments.length)} |</span>
                     <span className="mr-3 font-bold text-2xl text-green-600">Total Like : {post.Likes} |</span>
                     <span className="mr-3 font-bold text-2xl text-red-400">Total Views : {post.views}</span>
-                    <span className="mr-3 font-bold text-2xl bg-gray-600 text-white rounded-md p-3 ">Edit</span>
-                    <span className="mr-3 font-bold text-2xl bg-red-500 text-white rounded-md p-3">Delete</span>
+                    <span className="mr-3 font-bold text-2xl bg-gray-600 text-white rounded-md p-3 cursor-pointer " onClick={() => {handleEdit(post)}}>Edit</span>
+                    <span className="mr-3 font-bold text-2xl bg-red-500 text-white rounded-md p-3 cursor-pointer" onClick={()=> {handleDelete(post.id)}}>Delete</span>
                   </div>
                 </div>
 
@@ -92,7 +154,7 @@ function UserPost() {
                     />
                   </div>
                 </div>
-              </Link>
+              </div>
             );
           })}
           </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import image from "../../styles/image.webp";
 import TopPost from "./topPost";
@@ -6,23 +6,31 @@ import Topic from "./topic";
 
 
 function PostList() {
-  //   useEffect(async() => {
 
-  //     const res = await fetch("/GetExpertDetails" , {
+  const [posts , setPosts ] = useState('')
+  const [searchText , setSearchText] = useState('');
+  const [filterDate , setFilterDate] =useState('');
+  const [filterAuthor , setFilterAuthor] = useState('');
+  const [loading , setLoading] = useState(true);
+
+
+  // const fetchPosts = async() =>{
+  //     const res = await fetch("/getPosts" , {
   //         method:"GET" ,
   //         headers:{
   //             "Content-Type":"application/json",
-  //             "id":id
+  //             // "id":id
   //         }
   //     });
 
   //     const result = await  res.json();
-  //     setExpertPortfolio(result);
+  //     setPosts(result);
   //     setLoading(false);
+  // }
 
-  // }, [])
 
-  const posts = [
+
+const postss = [
     {
       id:"1",
       Title: "Special Report: Extreme Heat and Human Health",
@@ -73,10 +81,52 @@ function PostList() {
       Topic: "Environment",
       FeaturedImage: image,
       postData: "This is the content of Sample Post 3...",
-    },
-  ];
+    }
+  ]
 
-  console.log(posts);
+
+
+  useEffect(() => {
+    setPosts(postss)
+    setLoading(false)
+
+  // fetchPosts()
+  
+}, [searchText , filterAuthor , filterDate])
+
+
+
+  const handleSearch = (e)=>{
+    setSearchText(e.target.value)
+    //POST REQUEST API call for the search with the particular search text
+
+    // the response for the GET API lets say data  --->   setPost(data);
+
+  }
+
+  const handleFilterAuthor = (e)=>{
+    setFilterAuthor(e.target.value)
+    //POST REQUEST API call for the filter with the particular filter tag
+    // the response for the POST API lets say data  --->   setPost(data);
+
+  }
+
+  const handleFilterDate = (e)=>{
+    setFilterDate(e.target.value)
+    // POST REQUEST API call for the filter with the particular filter tag
+
+    // the response for the POST API lets say data  --->   setPost(data);
+
+  }
+
+
+
+  if(loading)
+    return <>Loading...</>
+
+
+console.log(posts);
+
 
   return (
     <>
@@ -85,6 +135,14 @@ function PostList() {
    <TopPost/>
    </div>
     </div>
+      <div className="flex justify-center m-10 ml-28 mr-28 p-5 bg-blue-200">
+        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-1/3 text-2xl m-10 border-none" value={searchText} onChange={handleSearch} type="text" placeholder="Search..." />
+        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 text-2xl m-10 border-none" value={filterAuthor} onChange={handleFilterAuthor} type="text" placeholder="Filter by Author..." />
+        <div className="flex justify-center items-center">
+        <span className="text-blue-900 text-xl font-bold">Filter by date: </span>
+        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 text-2xl m-10 border-none"  value={filterDate} onChange={handleFilterDate} type="date" placeholder="Filter by Date..." />
+        </div>
+      </div>
     <div className="flex justify-start  ml-20">
     <h1 className='text-blue-950 font-bold text-3xl mb-5 '>Explore Amazing Articles</h1>
     </div>
@@ -118,7 +176,7 @@ function PostList() {
                     <img
                       className="min-w-2/3 h-64 flex-shrink-0 rounded-lg"
                       src={post.FeaturedImage}
-                      alt="feature image"
+                      alt="featurePhoto"
                     />
                   </div>
                 </div>
@@ -127,7 +185,6 @@ function PostList() {
           })}
           </div>
         </div>
-
 
           <div className="h-96 w-2/3 sticky top-36">
            <Topic/>

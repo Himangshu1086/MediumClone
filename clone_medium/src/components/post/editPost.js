@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect } from 'react'
 import { useState } from 'react';
 import { PostSchema } from '../form_validation/post_validation';
@@ -5,39 +6,30 @@ import { useFormik } from 'formik';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { UserContext } from '../contextApi/contextApi';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
-export default function AddPost() {
+export default function EditPost() {
+
+    const location = useLocation();
+    const post = location.state;
+    
+    console.log(post)
 
 
-    // const addPost = async(values , postdata )=>{
+  const navigate = useNavigate();
+  const {checkUser, user } = useContext(UserContext);
+  const [loading , setLoading] = useState(true)
 
-    //     const expt = await fetch("/addPost" ,{
-    //         method:"POST" ,
-    //         headers:{
-    //             "Content-Type":"application/json"
-    //         },
-    //         body:JSON.stringify({values , postdata})
-    //       });
-        
-    //       const data = await expt.json();
-          
-    //       if(data.status === 501 || !data)
-    //       {
-    //         window.alert("Invalid Credentials");
-    //         console.log("Invalid Credentials");
-    //     }
-    //         if(data.error){
-    //           window.alert("Invalid Credentials")
-    //         }
-    //       else
-    //       {
-    //           console.log("login successful");
-    //           nagivate.("/");
-              
-    //       }
-    // }
+  useEffect(()=>{
+    if(checkUser)
+      setLoading(false);
+      else
+        navigate('/signin')
+  },[])
+
+
+
 
     const [postdata , setPostdata] = useState('')
 
@@ -47,28 +39,47 @@ export default function AddPost() {
       };
     
 
-
     const [formData , setFormData] = useState('')
 
     const initialValues = {
-        Title: "",
-        Topic: "",
-        FeaturedImage: "",
+        Title: post.Title,
+        Topic: post.Topic,
+        FeaturedImage: post.FeaturedImage,
         Date:"",
         Time:"",
-        Author:"",
+        Author:post.Author,
       };
 
       const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
       useFormik({
         initialValues,
         validationSchema: PostSchema,
-        onSubmit: (values, action) => {
+        onSubmit: async(values, action) => {
           setFormData(values)
-          // addPost(values , postdata)
+
+          try {
+            const response = await fetch('/editPost', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'id':post.id
+              },
+              body: JSON.stringify({values , postdata}),
+            });
+      
+            const data = await response.json();
+            console.log(data); // Response data from the server after the POST request
+          } catch (error) {
+            console.error('Error:', error);
+          }
           action.resetForm();
+          navigate('/profile')
         },
       });
+
+
+      if(loading)
+      return<><h1>loading...</h1></>
 
       console.log(postdata , formData)
 
@@ -76,7 +87,7 @@ export default function AddPost() {
     <div className='p-5 mt-10'>
     <div className="h-auto flex flex-col m-auto w-3/5 p-5 rounded-xl shadow-2xl">
        <div><h1 className=" border-b-2 pb-4 border-blue-400 px-10 m-10 text-4xl mt-10 text-black text-center">
-            Add Post 
+            Edit Post 
         </h1></div>
     <div>
         <form onSubmit={handleSubmit}>
@@ -157,7 +168,7 @@ export default function AddPost() {
                     <label htmlFor="postText" className="input-label">
                     Post Text
                     </label>
-                    <CKEditor editor={ClassicEditor} onChange={handleEditorChange} />
+                    <CKEditor editor={ClassicEditor} data={post.postData} onChange={handleEditorChange} />
                     {errors.postText && touched.postText ? (
                       <p className="form-error">{errors.postText}</p>
                     ) : null}
@@ -167,7 +178,7 @@ export default function AddPost() {
 
                   <div className="modal-buttons">
                     <button className="input-button" type="submit">
-                      Add Post
+                      Edit Post
                     </button>
                   </div>
                 </form>

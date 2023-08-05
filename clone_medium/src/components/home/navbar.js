@@ -1,15 +1,20 @@
 
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
+import { UserContext } from "../contextApi/contextApi";
 
 const Navbar = () => {
 
-
-
-
+  const {checkUser , user} = useContext(UserContext)
+  
+  const cookies = new Cookies();
   const [scrolled, setScrolled] = useState(false);
+  // const [checkUser , setCheckUser] = useState(true);
 
+
+  
   const handleScroll = () => {
     if (window.scrollY > 785) {
       setScrolled(true);
@@ -18,17 +23,56 @@ const Navbar = () => {
     }
   };
 
+
+  // const fetchUser = async () =>{
+  //   try{
+  //     const res = await fetch("/userLoggedIn" , {
+  //     method:"GET" ,
+  //     headers:{
+  //       Accept:"application/json",
+  //       "Content-Type":"application/json",
+  //     } , 
+  //     credentials:"include"
+  //   });
+  
+  //   const data = await res.json();
+  //   if(data.user[0].type ==="user")
+  //   {setCheckUser(true)}
+    
+  // }catch(err){
+  //     console.log(err)
+  //   }
+  // };
+
+
+
   useEffect(() => {
+    // // get the user data verification
+    // fetchUser();
+    // on scroll change the bg color of navbar
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+
   }, []);
+
+
+
+
+  //logout function
+const logout = ()=>{
+  cookies.remove("token");
+  useNavigate.push("/");
+  window.location.reload();
+}
+
+
 
 
   return (
     <div>
-      <nav className={`bg-${scrolled ? 'white' : 'yellow-500'} p-4 border-gray-200`}   style={{borderBottom:'1px solid black'}}>
+      <nav className={`bg-${scrolled ? 'white' : 'yellow-500'} bg-yellow-500 p-4 border-gray-200 ease-in duration-300`}   style={{borderBottom:'1px solid black'}}>
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-8 ">
           <Link to="/" class="flex items-center">
             <img
@@ -75,7 +119,10 @@ const Navbar = () => {
                   <span className="p-10 rounded-2xl">Sign In</span>
                 </Link>
               </li>
-              <li>
+
+              
+    { checkUser ?
+              <><li>
                 <Link
                   to="/profile"
                   class="block py-2 pl-3 text-2xl pr-4 text-gray-900 mr-8 hover:text-blue-700"
@@ -83,6 +130,20 @@ const Navbar = () => {
                   Profile
                 </Link>
               </li>
+
+
+              <li>
+                <Link
+                  to="/" onClick={logout}
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-black hover:bg-gray-700 text-white rounded-3xl "
+                >
+                  <span className="p-10 rounded-2xl">Logout</span>
+                </Link>
+              </li>
+              </> : 
+              <></>
+    }
+
             </ul>
           </div>
         </div>

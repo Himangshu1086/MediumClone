@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { signInSchema } from "../form_validation/signin_validation";
 import '../../styles/form.css'
-import { Link } from "react-router-dom";
+import { Link ,useNavigate } from "react-router-dom";
 
 
-const SignUp = () => {
-  
+const SignIn = () => {
+
+  const navigate = useNavigate();
+
   const initialValues = {
     email: "",
     password: "",
@@ -17,8 +19,37 @@ const SignUp = () => {
     useFormik({
       initialValues,
       validationSchema: signInSchema,
-      onSubmit: (values, action) => {
-          setFormData(values)
+      onSubmit: async(values, action) => {
+
+        setFormData(values)
+
+        const res = await fetch("/signIn" ,{
+          method:"POST" ,
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            values
+          })
+        });
+      
+        const data = await res.json();
+        
+        if(data.status === 422 || !data)
+        {
+          window.alert("Invalid Credentials");
+          console.log("Invalid Credentials");
+        }
+          if(data.error){
+            window.alert("Invalid Credentials")
+          }
+        else
+        {
+            console.log("login successful");
+            navigate("/");
+           //window.location.reload();
+            
+        }
         action.resetForm();
       },
     });
@@ -98,4 +129,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

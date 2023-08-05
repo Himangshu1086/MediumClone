@@ -20,8 +20,35 @@ const SignUp = () => {
     useFormik({
       initialValues,
       validationSchema: signUpSchema,
-      onSubmit: (values, action) => {
-          setFormData(values)
+      onSubmit: async(values, action) => {
+        setFormData(values)
+
+    //     const expt = await fetch("/addUser" ,{
+    //         method:"POST" ,
+    //         headers:{
+    //             "Content-Type":"application/json"
+    //         },
+    //         body:JSON.stringify({values})
+    //       });
+        
+    //       const data = await expt.json();
+          
+    //       if(data.status === 501 || !data)
+    //       {
+    //         window.alert("Invalid Credentials");
+    //         console.log("Invalid Credentials");
+    //     }
+    //         if(data.error){
+    //           window.alert("Invalid Credentials")
+    //         }
+    //       else
+    //       {
+    //           console.log("registered successful");
+    //           nagivate.("/signin");
+              
+    //       }
+    // }
+
         action.resetForm();
       },
     });

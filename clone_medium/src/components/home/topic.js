@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {Link } from 'react-router-dom'
 function Topic() {
 
 
@@ -23,7 +23,7 @@ function Topic() {
                 {
                     topics.map( topic => {
                         return (
-                            <span className='m-4 p-4 text-black text-xl bg-gray-300 rounded-lg shadow-lg shadow-gray-400  hover:ease-in duration-300 hover:scale-95'>{topic}</span>
+                            <Link to= {`/topiclist/${topic}`} className='m-4 p-4 text-black text-xl bg-gray-300 rounded-lg shadow-lg shadow-gray-400  hover:ease-in duration-300 hover:scale-95'>{topic}</Link>
                         )
                     })
                 }
