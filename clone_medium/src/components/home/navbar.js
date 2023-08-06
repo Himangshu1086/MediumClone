@@ -131,7 +131,7 @@ const logout = ()=>{
   return (
     <div>
       <nav className={`bg-${scrolled ? 'white' : 'yellow-500'} bg-yellow-500 p-4 border-gray-200 ease-in duration-300`}   style={{borderBottom:'1px solid black'}}>
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-8 ">
+        <div class="max-w-screen-xl max-sm:w-full flex flex-wrap items-center justify-between mx-auto p-8 ">
           <Link to="/" class="flex items-center">
             <img
               src="https://images.unsplash.com/photo-1618034100983-e1d78be0dc80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=973&q=80"
@@ -142,12 +142,12 @@ const logout = ()=>{
               Medium
             </span>
           </Link>
-          <div class="hidden w-full md:block md:w-auto">
-            <ul class="font-medium flex flex-row p-4">
+          <div class="hidden max-sm:block  w-full md:block md:w-auto max-sm:mt-5 ">
+            <ul class="font-medium flex flex-row p-4 max-sm:p-0">
               <li>
                 <Link
                   to="/"
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 text-black hover:text-blue-700"
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg text-black hover:text-blue-400"
                   aria-current="page"
                 >
                   Home
@@ -156,7 +156,7 @@ const logout = ()=>{
               <li>
                 <Link
                   to="/ourstory"
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 text-gray-900 hover:text-blue-700"
+                  class="block max-sm:hidden py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg text-gray-900 hover:text-blue-700"
                 >
                   Our Story
                 </Link>
@@ -164,7 +164,7 @@ const logout = ()=>{
               <li>
                 <Link
                   to="/write"
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 text-gray-900 hover:text-blue-700"
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg text-gray-900 hover:text-blue-700"
                 >
                   Write
                 </Link>
@@ -172,15 +172,15 @@ const logout = ()=>{
               <li>
                 <Link
                   to="/signin"
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-blue-950 hover:bg-blue-900 text-white rounded-3xl "
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg bg-blue-950 hover:bg-blue-900 text-white rounded-3xl "
                 >
-                  <span className="p-10 rounded-2xl">Sign In</span>
+                  <span className="p-10 rounded-2xl max-sm:p-2 max-sm:rounded-lg max-sm:w-full">Sign In</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to=""
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-green-700 hover:bg-green-600 text-white rounded-3xl "
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg bg-green-700 hover:bg-green-600 text-white rounded-3xl "
                 >
                   <span className="p-10 rounded-2xl" onClick={()=>{handleRazorpay(300)}}  >Pay</span>
                 </Link>
@@ -191,7 +191,7 @@ const logout = ()=>{
               <><li>
                 <Link
                   to="/profile"
-                  class="block py-2 pl-3 text-2xl pr-4 text-gray-900 mr-8 hover:text-blue-700"
+                  class="block py-2 pl-3 text-2xl pr-4 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg text-gray-900 mr-8 hover:text-blue-700"
                 >
                   Profile
                 </Link>
@@ -201,7 +201,7 @@ const logout = ()=>{
               <li>
                 <Link
                   to="/" onClick={logout}
-                  class="block py-2 pl-3 text-2xl pr-4 mr-8 bg-black hover:bg-gray-700 text-white rounded-3xl "
+                  class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg bg-black hover:bg-gray-700 text-white rounded-3xl "
                 >
                   <span className="p-10 rounded-2xl">Logout</span>
                 </Link>
