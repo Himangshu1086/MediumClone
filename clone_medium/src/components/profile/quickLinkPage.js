@@ -111,15 +111,15 @@ function QuickLinkPage() {
 
 
   return (
-    <><div><h1 className='text-center mt-40'>User Id: {userId} <br/>Page: {link}</h1></div>
+    <><div><h1 className='text-center mt-40 max-sm:mt-10'>User Id: {userId} <br/>Page: {link}</h1></div>
     <div>
        <h1 className='text-blue-950 font-bold text-3xl mb-5 mt-20 text-center'> Articles on {link}</h1>
        <div className="flex flex-wrap mr-10 w-full justify-center ">
           {posts.map((post) => {
             return (
-              <Link to={post.id} className=' flex p-5 justify-center bg-gray-100 shadow-lg shadow-black-500/50 mb-8 mr-4 w-1/3  hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95'>
+              <Link to={`/${post.id}`} className=' flex max-sm:flex-col max-sm:w-3/5 p-5 justify-center bg-gray-100 shadow-lg shadow-black-500/50 mb-8 mr-4 w-1/3  hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95'>
                 <div className='flex justify-center'>
-                  <div className="w-60 h-60 m-2 flex justify-center  overflow-hidden">
+                  <div className="w-60 h-60 max-sm:w-full m-2 flex justify-center  overflow-hidden">
                     <img
                       className="rounded-lg"
                       src={post.FeaturedImage}
@@ -136,11 +136,11 @@ function QuickLinkPage() {
                   <div className="w-full text-left h-16">
                     <h2 className=' text-2xl font-bold'>{post.Title}</h2>
                   </div>
-                  <div className="w-full text-justify  mt-1 mb-1 h-20 ">
+                  <div className="w-full text-justify max-sm:w-4/5 mt-1 mb-1 h-20 ">
                     <p className='text-lg'>{post.postData}</p>
                   </div>
 
-                  <div className="w-full mt-4">
+                  <div className="w-full mt-4 max-sm:mt-10">
                   <span className="mr-3 font-light">{post.Date}</span>
                     <span className="mr-3 font-light">{post.Time}</span>
                     <span className="mr-3 font-bold text-blue-500">{post.Topic}</span>
