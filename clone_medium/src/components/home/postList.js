@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../../styles/image.webp";
 import TopPost from "./topPost";
 import Topic from "./topic";
@@ -7,6 +7,7 @@ import Topic from "./topic";
 
 function PostList() {
 
+  const navigate = useNavigate();
   const [posts , setPosts ] = useState('')
   const [searchText , setSearchText] = useState('');
   const [filterDate , setFilterDate] =useState('');
@@ -14,19 +15,19 @@ function PostList() {
   const [loading , setLoading] = useState(true);
 
 
-  // const fetchPosts = async() =>{
-  //     const res = await fetch("/getPosts" , {
-  //         method:"GET" ,
-  //         headers:{
-  //             "Content-Type":"application/json",
-  //             // "id":id
-  //         }
-  //     });
+  const fetchPosts = async() =>{
+      const res = await fetch("/getPosts" , {
+          method:"GET" ,
+          headers:{
+              "Content-Type":"application/json",
+              // "id":id
+          }
+      });
 
-  //     const result = await  res.json();
-  //     setPosts(result);
-  //     setLoading(false);
-  // }
+      const result = await  res.json();
+      setPosts(result);
+      setLoading(false);
+  }
 
 
 
@@ -96,26 +97,103 @@ const postss = [
 
 
 
-  const handleSearch = (e)=>{
+  const handleSearch = async(e)=>{
     setSearchText(e.target.value)
     //POST REQUEST API call for the search with the particular search text
+
+
+    const expt = await fetch("/searchHandle" ,{
+              method:"POST" ,
+              headers:{
+                  "Content-Type":"application/json"
+              },
+              body:JSON.stringify({searchText})
+            });
+          
+            const data = await expt.json();
+            
+            if(data.status === 501 || !data)
+            {
+              window.alert("Invalid Credentials");
+              console.log("Invalid Credentials");
+          }
+              if(data.error){
+                window.alert("Invalid Credentials")
+              }
+            else
+            {
+               setPosts(data); 
+            }
+
 
     // the response for the GET API lets say data  --->   setPost(data);
 
   }
 
-  const handleFilterAuthor = (e)=>{
+  const handleFilterAuthor = async(e)=>{
     setFilterAuthor(e.target.value)
     //POST REQUEST API call for the filter with the particular filter tag
     // the response for the POST API lets say data  --->   setPost(data);
 
+
+    const expt = await fetch("/filterAuthor" ,{
+      method:"POST" ,
+      headers:{
+          "Content-Type":"application/json"
+      },
+      body:JSON.stringify({filterAuthor})
+    });
+  
+    const data = await expt.json();
+    
+    if(data.status === 501 || !data)
+    {
+      window.alert("Invalid Credentials");
+      console.log("Invalid Credentials");
+  }
+      if(data.error){
+        window.alert("Invalid Credentials")
+      }
+    else
+    {
+       setPosts(data); 
+    }
+
+
+
+
+
   }
 
-  const handleFilterDate = (e)=>{
+  const handleFilterDate = async(e)=>{
     setFilterDate(e.target.value)
     // POST REQUEST API call for the filter with the particular filter tag
 
     // the response for the POST API lets say data  --->   setPost(data);
+
+    const expt = await fetch("/filterDate" ,{
+      method:"POST" ,
+      headers:{
+          "Content-Type":"application/json"
+      },
+      body:JSON.stringify({filterDate})
+    });
+  
+    const data = await expt.json();
+    
+    if(data.status === 501 || !data)
+    {
+      window.alert("Invalid Credentials");
+      console.log("Invalid Credentials");
+  }
+      if(data.error){
+        window.alert("Invalid Credentials")
+      }
+    else
+    {
+       setPosts(data); 
+    }
+
 
   }
 

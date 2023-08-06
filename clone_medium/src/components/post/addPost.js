@@ -36,7 +36,7 @@ export default function AddPost() {
     //       else
     //       {
     //           console.log("login successful");
-    //           nagivate.("/");
+    //           navigate("/");
               
     //       }
     // }
