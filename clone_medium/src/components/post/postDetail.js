@@ -145,10 +145,10 @@ function PostDetail() {
 
   return (
     <>
-      <div className="flex m-32 flex-col justify-center">
-        <div className='flex justify-center'>
-                <h1 className='text-center font-bold text-balck text-7xl'>{post[0].Title}</h1>
-                <span className="ml-10 p-4 bg-green-300 rounded-xl font-bold cursor-pointer text-2xl" onClick={ (e)=> {handleSaveforLater(post[0].id)}}>Save for Later</span>
+      <div className="flex m-32 max-sm:m-10 flex-col justify-center">
+        <div className='flex justify-center max-sm:flex-col '>
+                <h1 className='text-center font-bold text-black text-7xl max-sm:text-3xl'>{post[0].Title}</h1>
+                <span className="ml-10 p-4 bg-green-300 rounded-xl font-bold cursor-pointer text-2xl max-sm:text-xl max-sm:w-1/3" onClick={ (e)=> {handleSaveforLater(post[0].id)}}>Save for Later</span>
             </div>
         <div>
           <div className="flex justify-center items-center">
@@ -175,11 +175,11 @@ function PostDetail() {
           </div>
         </div>
         <div className="mt-10 flex justify-center items-center">
-          <p className="text-justify w-1/2" >
+          <p className="text-justify w-1/2 max-sm:w-full " >
             <ReactMarkdown rehypePlugins={[rehypeRaw]}>{post[0].postData}</ReactMarkdown>
             </p>
         </div>
-      <div className="flex justify-center m-10">
+      <div className="flex max-sm:flex-col justify-center m-10">
       <div className="flex flex-col mt-16 bg-gray-100 p-10 ">
       <h1 className="text-start text-blue-500 mb-5">Comments: </h1>
       <div className="h-4/5 overflow-y-auto">
