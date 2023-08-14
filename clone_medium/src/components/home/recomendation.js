@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image from "../../styles/image.webp";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 function Recomendation() {
 
 
-  const posts = [
+  const postss = [
     {
       id: "1",
       Title: "Special Report: Extreme Heat and Human Health",
@@ -59,6 +62,39 @@ function Recomendation() {
     },
   ];
 
+
+
+
+  const [posts , setPosts] = useState([])
+  const [loading , setLoading] = useState(true);
+
+  const fetchTopPost = async() =>{
+    await axios.get('http://127.0.0.1:3000/get/topPosts')
+    .then((response) => {
+      if(response.data==[])
+        setPosts(postss)
+      else setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
+  }
+
+
+  useEffect(() => {
+    // setPosts(postss)
+    fetchTopPost()
+    setLoading(false)
+  
+}, [])
+
+
+  if(loading)
+  return <>Loading...</>
+
+
+
   return (
     <div>
       <div className="m-20 ">
@@ -76,7 +112,7 @@ function Recomendation() {
                     <div className="w-60 h-60 max-sm:w-full m-2 flex justify-center  overflow-hidden">
                       <img
                         className="min-w-1/3 rounded-lg"
-                        src={post.FeaturedImage}
+                        src={post.image}
                         alt="featurePhoto"
                       />
                     </div>
@@ -84,20 +120,22 @@ function Recomendation() {
 
                   <div className="p-2 m-2 rounded-md w-full h-72 overflow-hidden">
                     <div className="p-2 max-sm:p-0  text-gray-600 font-bold text-lg text-bold">
-                      <h3>{post.Author}</h3>
+                      <h3>{post.author_name}</h3>
                     </div>
-                    <div className="w-full text-left overflow-hidden h-16">
-                      <h2 className=" text-2xl font-bold">{post.Title}</h2>
+                    <div className="w-full text-left overflow-hidden h-16 overflow-hidden">
+                      <h2 className=" text-2xl font-bold">{post.title}</h2>
                     </div>
                     <div className="w-full text-justify  mt-1 mb-1 h-20 overflow-hidden">
-                      <p className="text-lg text-gray-600">{post.postData}</p>
+                      <p className="text-lg text-gray-600">
+                      <ReactMarkdown rehypePlugins={[rehypeRaw]}>{post.text}</ReactMarkdown>
+                      </p>
                     </div>
 
                     <div className="w-full mt-3 text-gray-600">
-                      <span className="mr-3 font-light">{post.Date}</span>
-                      <span className="mr-3 font-light">{post.Time}</span>
+                      <span className="mr-3 font-light">31 July 2023</span>
+                      <span className="mr-3 font-light">{post.reading_time}</span>
                       <br />
-                      <span className="mr-3 font-bold text-blue-400 ">{post.Topic}</span>
+                      <span className="mr-3 font-bold text-blue-400 ">{post.topic}</span>
                     </div>
                   </div>
               </Link>

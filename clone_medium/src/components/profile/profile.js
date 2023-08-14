@@ -10,7 +10,7 @@ function Profile() {
    <>
     <div className='flex flex-col'>
       <UserDetail/>
-     <div className='flex max-sm:flex-col-reverse'>
+     <div className='flex max-sm:flex-col-reverse justify-center'>
      <UserPost/>
      <QuickLinks />
      </div>

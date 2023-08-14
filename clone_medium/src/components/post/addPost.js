@@ -5,113 +5,170 @@ import { useFormik } from 'formik';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { UserContext } from '../contextApi/contextApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 
 export default function AddPost() {
 
+  const jwtToken = localStorage.getItem('jwtToken');
+  const headers = {
+    'authToken': jwtToken,
+  };
+  
+const {state } = useLocation();
+let draft_id = ''
+if(state!=null)
+{
+  draft_id = state['draft_id']
+}
+
+console.log(draft_id)
+const navigate = useNavigate()
+const [title, setTitle] = useState('');
+const [topic, setTopic] = useState();
+const [imageFile, setImageFile] = useState(null); // State to store the selected image file
+const [text, setText] = useState('');
+const [loading , setLoading] = useState(true);
+
+
+useEffect(() => {
+  
+  if(draft_id)
+  {
+    axios.get(`http://127.0.0.1:3000/draft/get/all` , {headers})
+    .then((response) => {
+      const draft_find = response.data.find(item=> item.id=== draft_id)
+      setTitle(draft_find.title);
+      setTopic(draft_find.topic);
+      setText(draft_find.text);
+      setImageFile(draft_find.image);
+      setText(draft_find.text)
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+  
+    });
+    setLoading(false)
+  }
+  
+}, []);
+
+
+
+const handleEditorChange = (event, editor) => {
+  const data = editor.getData();
+  setText(data)
+};
+
+
+
+
+
+const handleImageChange = (e) => {
+const file = e.target.files[0];
+const formData = new FormData();
+formData.append('image', file, 'filename.jpg', { charset: 'utf-8' });
+
+axios.post('http://127.0.0.1:3000/upload',formData,{headers}).then((response)=>{
+    setImageFile(response.data.file_url);
+})
+.catch((error)=>{
+    console.log("hello");
+    console.error(error);
+})
+setImageFile(file);
+};
+
+
+// handle topic 
+const handleTopic = (e) =>{
+  e.preventDefault()
+  axios.post('http://127.0.0.1:3000/topic/create', {'name':topic} , {headers} )
+  .then((response) => {
+    console.log('Post saved!', response.data);
+  })
+  .catch((error) => {
+    console.error('Error saving post:', error);
+  });
+  setLoading(false)
+
+}
 
   // HANDLE OF ADD POST
   
-    // const addPost = async(values , postdata )=>{
+    const addPost = async()=>{
+      axios.get('http://127.0.0.1:3000/topic/showAll')
+  .then((response) => {
+    const postData = {
+      title: title,
+      topic: topic,
+      text: text,
+      topic_id:response.data.find( item => item.name === topic).id,
+      author_id:1,
+      featured_image:imageFile
+    };
 
-    //     const expt = await fetch("/addPost" ,{
-    //         method:"POST" ,
-    //         headers:{
-    //             "Content-Type":"application/json"
-    //         },
-    //         body:JSON.stringify({values , postdata})
-    //       });
-        
-    //       const data = await expt.json();
-          
-    //       if(data.status === 501 || !data)
-    //       {
-    //         window.alert("Invalid Credentials");
-    //         console.log("Invalid Credentials");
-    //     }
-    //         if(data.error){
-    //           window.alert("Invalid Credentials")
-    //         }
-    //       else
-    //       {
-    //           console.log("login successful");
-    //           navigate("/");
-              
-    //       }
-    // }
+    axios.post('http://127.0.0.1:3000/create/post', postData,{headers})
+    .then((res) => {
+      console.log('Post saved!', res.data);
+    })
+    .catch((error) => {
+      console.error('Error saving post:', error);
+    });
+    navigate('/');
+  })
+  .catch((error) => {
+    console.error('Error fetching posts:', error);
+  });
+
+// if draft is add to post -- remove the draft
+      if(draft_id)
+      {
+        axios.delete(`http://127.0.0.1:3000/draft/publish/${draft_id}` , {headers})
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching posts:', error);
+        });
+      }
+
+      
+    }
 
 
     //HANDLE SAVE AS DRAFT
 
-    // const addToDraft = async(formData , postdata )=>{
+    const handleSaveForDraft = async()=>{
+      axios.get('http://127.0.0.1:3000/topic/showAll')
+  .then((response) => {
+    const postData = {
+      title: title,
+      // topics: topic,
+      text: text,
+      topic_id:response.data.find( item => item.name === topic).id,
+      author_id:1,
+      featured_image:imageFile
+    };
 
-    //     const expt = await fetch("/saveDraft" ,{
-    //         method:"POST" ,
-    //         headers:{
-    //             "Content-Type":"application/json"
-    //         },
-    //         body:JSON.stringify({formData , postdata})
-    //       });
-        
-    //       const data = await expt.json();
-          
-    //       if(data.status === 501 || !data)
-    //       {
-    //         window.alert("Invalid Credentials");
-    //         console.log("Invalid Credentials");
-    //     }
-    //         if(data.error){
-    //           window.alert("Invalid Credentials")
-    //         }
-    //       else
-    //       {
-    //           console.log("login successful");
-    //           nagivate.("/");
-              
-    //       }
-    // }
-
-    const [postdata , setPostdata] = useState('')
+   axios.post('http://127.0.0.1:3000/draft/create', postData,{headers})
+    .then((res) => {
+      console.log('Post saved!', res.data);
+    })
+    .catch((error) => {
+      console.error('Error saving post:', error);
+    });
+    navigate('/');
+  })
+  .catch((error) => {
+    console.error('Error fetching posts:', error);
+  });
+      
+    }
 
 
-    const handleEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setPostdata(data)
-      };
-    
-
-
-    const [formData , setFormData] = useState('')
-
-    const initialValues = {
-        Title: "",
-        Topic: "",
-        FeaturedImage: "",
-        Date:"",
-        Time:"",
-        Author:"",
-      };
-
-      const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
-      useFormik({
-        initialValues,
-        validationSchema: PostSchema,
-        onSubmit: (values, action) => {
-          setFormData(values)
-          // addPost(values , postdata)
-          action.resetForm();
-        },
-      });
-
-
-      const handleSaveForDraft = () =>{
-          // addToDraft(formData , postdata);
-      }
-
-
-
-      console.log(postdata , formData)
 
   return (
     <div className='p-5 mt-10'>
@@ -120,7 +177,6 @@ export default function AddPost() {
             Add Post 
         </h1></div>
     <div>
-        <form onSubmit={handleSubmit}>
                   <div className="input-block">
                     <label htmlFor="Title" className="input-label">
                     Title
@@ -128,16 +184,10 @@ export default function AddPost() {
                     <input
                       type="text"
                       autoComplete="off"
-                      name="Title"
-                      id="Title"
                       placeholder="Title"
-                      value={values.Title}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={title}
+                      onChange={(e)=>{setTitle(e.target.value)}}
                     />
-                    {errors.Title && touched.Title ? (
-                      <p className="form-error">{errors.Title}</p>
-                    ) : null}
                   </div>
                   <div className="input-block">
                     <label htmlFor="Topic" className="input-label">
@@ -149,72 +199,44 @@ export default function AddPost() {
                       name="Topic"
                       id="Topic"
                       placeholder="Topic"
-                      value={values.Topic}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={topic}
+                      onChange={(e)=>{setTopic(e.target.value)}}
                     />
-                    {errors.Topic && touched.Topic ? (
-                      <p className="form-error">{errors.Topic}</p>
-                    ) : null}
+                    <button className='bg-blue-400 text-black rounded-xl p-2 w-32 m-2' onClick={handleTopic}>Add Topic</button>
                   </div>
-                  <div className="input-block">
+                  {
+                    loading ? <>Please Add a topic first !</>:
+                    <>
+                    <div className="input-block">
                     <label htmlFor="FeaturedImage" className="input-label">
                     Featured Image
                     </label>
                     <input
-                      type="text"
-                      autoComplete="off"
-                      name="FeaturedImage"
-                      id="FeaturedImage"
-                      placeholder="Featured Image"
-                      value={values.FeaturedImage}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      type="file"
+                      accept = "image/*"
+                      onChange={handleImageChange}
                     />
-                    {errors.FeaturedImage && touched.FeaturedImage ? (
-                      <p className="form-error">{errors.FeaturedImage}</p>
-                    ) : null}
-                  </div>
-                  <div className="input-block">
-                    <label htmlFor="Author" className="input-label">
-                    Author 
-                    </label>
-                    <input
-                      type="text"
-                      autoComplete="off"
-                      name="Author"
-                      id="Author"
-                      placeholder="Author"
-                      value={values.Author}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.Author && touched.Author ? (
-                      <p className="form-error">{errors.Author}</p>
-                    ) : null}
                   </div>
 
                   <div className="input-block">
                     <label htmlFor="postText" className="input-label">
                     Post Text
                     </label>
-                    <CKEditor editor={ClassicEditor} onChange={handleEditorChange} />
-                    {errors.postText && touched.postText ? (
-                      <p className="form-error">{errors.postText}</p>
-                    ) : null}
-                    
+                    <CKEditor editor={ClassicEditor} data={text} onChange={handleEditorChange} />
                   </div>
 
 
                   <div className="modal-buttons">
-                    <button className="input-button" type="submit">
+                    <button className="input-button" onClick ={addPost}>
                       Add Post
                     </button>
-                  </div>
-                </form>
-                <button className="input-button mt-10" onClick={handleSaveForDraft} type="submit">
+                    <button className="input-button mt-10" onClick={handleSaveForDraft}>
                       Save as Draft
                     </button>
+                  </div>
+                    </>
+                  }
+
         </div>
 
 

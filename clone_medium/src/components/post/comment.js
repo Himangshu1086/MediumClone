@@ -2,11 +2,11 @@ import React from 'react'
 import { useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axios from 'axios';
 
 
-export default function Comments({postId}) {
+export default function Comments({postId , headers}) {
 
-    const [name , setName] = useState('')
     const [comment , setComment ] = useState('');
 
     const handleEditorChange = (event, editor) => {
@@ -15,33 +15,22 @@ export default function Comments({postId}) {
     };
 
 
-   const handleComment = async() =>{
-      console.log(name , comment)
+   const handleComment = async(e) =>{
+    e.preventDefault()
+    const Comment = {
+      post_id: postId,
+      text: comment
+    }
+    axios.post('http://127.0.0.1:3000/comment/create', Comment, { headers })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log('cannot put there');
+      console.error('Error fetching posts:', error);
 
-      const expt = await fetch("/addcomment" ,{
-                method:"POST" ,
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({name , comment , postId})
-              });
-            
-              const data = await expt.json();
-              
-              if(data.status === 501 || !data)
-              {
-                window.alert("Invalid Credentials");
-                console.log("Invalid Credentials");
-            }
-                if(data.error){
-                  window.alert("Invalid Credentials")
-                }
-              else
-              {
-                  console.log("login successful");
-                //  window.location.reload();
-                  
-              }
+    });
+    setComment('')
    }
     
 
@@ -51,16 +40,6 @@ export default function Comments({postId}) {
     <div className="h-auto flex m-auto w-full p-5 rounded-xl shadow-2xl">
     <div className='w-full'>
         <form>
-                  <div className="input-block">
-                    <label htmlFor="Title" className="input-label">
-                    Name:
-                    </label>
-                    <input
-                      value={name}
-                      onChange={(e) =>{setName(e.target.value)}}
-                    />
-                  </div>
-
                   <div className="input-block">
                     <label htmlFor="postText" className="input-label">
                     Comment:

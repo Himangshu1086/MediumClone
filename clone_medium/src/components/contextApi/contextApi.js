@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react'
 
 const UserContext = createContext();
@@ -5,54 +6,33 @@ const UserContext = createContext();
 function UserProvider({children}) {
     
     const [loading , setLoading] = useState(false)
-    const [checkUser , setCheckUser] = useState(true);
+    const [checkUser , setCheckUser] = useState(false);
     const [comfirmPayment , setConfirmPayment] = useState(true)
-    const [user , setUser] = useState(true);
+    const [user , setUser] = useState();
     
-    const fetchUser = async () =>{
-        try{
-          const res = await fetch("/userLoggedIn" , {
-          method:"GET" ,
-          headers:{
-            Accept:"application/json",
-            "Content-Type":"application/json",
-          } , 
-          credentials:"include"
-        });
-      
-        const data = await res.json();
-        if(data.user)
+    const fetchUser = async () =>{    
+      const jwtToken = localStorage.getItem('jwtToken');
+      const headers = {
+        'authToken': jwtToken
+      };    
+        if(jwtToken)
         {
-            setCheckUser(true)
-            setUser(data)
-            
+            setCheckUser(true)  
         }
-        
-      }catch(err){
-          console.log(err)
-        }
-      };
+
+        await axios.get('http://127.0.0.1:3000/author/my/details',{headers})
+        .then((response) => {
+          setUser(response.data);
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.error('Error fetching posts:', error);
+        });
+    }
 
 
       const fetchPaymentHistory = async()=>{
-        try{
-          const res = await fetch("/paymentHistory" , {
-          method:"GET" ,
-          headers:{
-            Accept:"application/json",
-            "Content-Type":"application/json",
-          } , 
-          credentials:"include"
-        });
-      
-        const data = await res.json();
-        if(data.user)
-        {
-            setConfirmPayment(true)
-        }
-      }catch(err){
-          console.log(err)
-        }
+       
       };
 
     useEffect( ()=>{

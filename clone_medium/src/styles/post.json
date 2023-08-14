@@ -1,0 +1,54 @@
+
+ {
+      id:"1",
+      Title: "Special Report: Extreme Heat and Human Health",
+      Author: "John Doe",
+      Date: "August 3, 2023",
+      Time: "19 min",
+      Topic: "Science",
+      FeaturedImage: image,
+      postData:
+        "Excessive heat is pushing the limits of human tolerability. In more than a dozen articles, Wise & Well examines how hot is too hot...",
+    },
+    {
+      id:"2",
+      Title: "Sample Post 2",
+      Author: "John Smith",
+      Date: "August 3, 2023",
+      Time: "12 min",
+      Topic: "College",
+      FeaturedImage: image,
+      postData: "This is the content of Sample Post 2...",
+    },
+    {
+      id:"3",
+      Title: "Sample Post 3",
+      Author: "John Hello",
+      Date: "August 3, 2023",
+      Time: " 10 min",
+      Topic: "Environment",
+      FeaturedImage: image,
+      postData: "This is the content of Sample Post 3...",
+    },
+    {
+      id:"2",
+      Title: "Sample Post 2",
+      Author: "John Smith",
+      Date: "August 3, 2023",
+      Time: "12 min",
+      Topic: "College",
+      FeaturedImage: image,
+      postData: "This is the content of Sample Post 2...",
+    },
+    {
+      id:"3",
+      Title: "Sample Post 3",
+      Author: "John Hello",
+      Date: "August 3, 2023",
+      Time: " 10 min",
+      Topic: "Environment",
+      FeaturedImage: image,
+      postData: "This is the content of Sample Post 3...",
+    }
+
+    }

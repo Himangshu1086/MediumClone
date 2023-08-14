@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { signUpSchema } from "../form_validation";
 import '../../styles/form.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
   
+  const navigate = useNavigate()
+
   const initialValues = {
     name: "",
     email: "",
     password: "",
-    confirm_password: "",
+    // confirm_password: "",
   };
   
   const [formData , setFormData] = useState('')
@@ -23,32 +25,29 @@ const SignUp = () => {
       onSubmit: async(values, action) => {
         setFormData(values)
 
-    //     const expt = await fetch("/addUser" ,{
-    //         method:"POST" ,
-    //         headers:{
-    //             "Content-Type":"application/json"
-    //         },
-    //         body:JSON.stringify({values})
-    //       });
+        const expt = await fetch("http://127.0.0.1:3000/create/author" ,{
+            method:"POST" ,
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(values)
+          });
         
-    //       const data = await expt.json();
+          const data = await expt.json();
           
-    //       if(data.status === 501 || !data)
-    //       {
-    //         window.alert("Invalid Credentials");
-    //         console.log("Invalid Credentials");
-    //     }
-    //         if(data.error){
-    //           window.alert("Invalid Credentials")
-    //         }
-    //       else
-    //       {
-    //           console.log("registered successful");
-    //           nagivate.("/signin");
-              
-    //       }
-    // }
-
+          if(data.status === 501 || !data)
+          {
+            window.alert("Invalid Credentials");
+            console.log("Invalid Credentials");
+        }
+            if(data.error){
+              window.alert("Invalid Credentials")
+            }
+          else
+          {
+              console.log("registered successful");
+              navigate("/signin"); 
+          }
         action.resetForm();
       },
     });
@@ -125,7 +124,7 @@ const SignUp = () => {
                       <p className="form-error">{errors.password}</p>
                     ) : null}
                   </div>
-                  <div className="input-block">
+                  {/* <div className="input-block">
                     <label htmlFor="confirm_password" className="input-label">
                       Confirm Password
                     </label>
@@ -142,7 +141,7 @@ const SignUp = () => {
                     {errors.confirm_password && touched.confirm_password ? (
                       <p className="form-error">{errors.confirm_password}</p>
                     ) : null}
-                  </div>
+                  </div> */}
                   <div className="modal-buttons">
                     <button className="input-button" type="submit">
                       Registration

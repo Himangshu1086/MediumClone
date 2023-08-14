@@ -7,23 +7,6 @@ import { UserContext } from "../contextApi/contextApi";
 
 
 
-const loadScript = (src) =>{
-
-  return new Promise( (resolve) =>{
-    const script = document.createElement('script')
-    script.src = src
-    script.onload = () =>{
-      resolve(true)
-    }
-    
-    script.onerror = ()=>{
-      resolve(false)
-    }
-    document.body.appendChild(script)
- 
-  } )
-}
-
 
 const Navbar = () => {
 
@@ -44,25 +27,7 @@ const Navbar = () => {
   };
 
 
-  // const fetchUser = async () =>{
-  //   try{
-  //     const res = await fetch("/userLoggedIn" , {
-  //     method:"GET" ,
-  //     headers:{
-  //       Accept:"application/json",
-  //       "Content-Type":"application/json",
-  //     } , 
-  //     credentials:"include"
-  //   });
-  
-  //   const data = await res.json();
-  //   if(data.user[0].type ==="user")
-  //   {setCheckUser(true)}
-    
-  // }catch(err){
-  //     console.log(err)
-  //   }
-  // };
+
 
 
 
@@ -81,47 +46,11 @@ const Navbar = () => {
 
 
 
-
-
-
-  const handleRazorpay = async( amount )=>{
-
-    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
-    if(!res)
-    {
-      alert("razorpay failed to load")
-      return
-    }
-
-    const options = {
-      key: "rzp_test_ZVmoR7VianmWFt",
-      amount: amount.toString(),
-      currency: 'INR',
-      name: "Soumya Corp.",
-      description: "Test Transaction",
-      // order_id: "sfvskvfdksfv",
-      handler: async function (response) {
-        console.log(response.razorpay_payment_id)
-        // console.log(response.razorpay_order_id)
-        console.log(response.razorpay_signature)
-      },
-      prefill: {
-          name: "Soumya Dey",
-          email: "SoumyaDey@example.com",
-          contact: "9999999999",
-      }
-  };
-
-  const rzp = new window.Razorpay(options)
-  rzp.open()
-}
-
-
-
   //logout function
-const logout = ()=>{
-  cookies.remove("token");
-  useNavigate.push("/");
+const logout = (e)=>{
+  e.preventDefault()
+  localStorage.removeItem('jwtToken')
+  // useNavigate.push("/");
   window.location.reload();
 }
 
@@ -169,7 +98,9 @@ const logout = ()=>{
                   Write
                 </Link>
               </li>
-              <li>
+              {
+                checkUser ? <></>:
+                <li>
                 <Link
                   to="/signin"
                   class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg bg-blue-950 hover:bg-blue-900 text-white rounded-3xl "
@@ -177,12 +108,13 @@ const logout = ()=>{
                   <span className="p-10 rounded-2xl max-sm:p-2 max-sm:rounded-lg max-sm:w-full">Sign In</span>
                 </Link>
               </li>
+              }
               <li>
                 <Link
-                  to=""
+                  to='/payment'
                   class="block py-2 pl-3 text-2xl pr-4 mr-8 max-sm:pr-1 max-sm:py-1 max-sm:mr-1 max-sm:text-lg bg-green-700 hover:bg-green-600 text-white rounded-3xl "
                 >
-                  <span className="p-10 rounded-2xl" onClick={()=>{handleRazorpay(300)}}  >Pay</span>
+                  <span className="p-10 rounded-2xl" >Subscriptions</span>
                 </Link>
               </li>
 

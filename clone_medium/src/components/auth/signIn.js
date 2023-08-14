@@ -23,18 +23,17 @@ const SignIn = () => {
 
         setFormData(values)
 
-        const res = await fetch("/signIn" ,{
+        const res = await fetch("http://127.0.0.1:3000/author/login" ,{
           method:"POST" ,
           headers:{
             "Content-Type":"application/json"
           },
-          body:JSON.stringify({
-            values
-          })
+          body:JSON.stringify(
+            values)
         });
       
         const data = await res.json();
-        
+        console.log(data)
         if(data.status === 422 || !data)
         {
           window.alert("Invalid Credentials");
@@ -46,8 +45,9 @@ const SignIn = () => {
         else
         {
             console.log("login successful");
+            localStorage.setItem('jwtToken', data.token);
             navigate("/");
-           //window.location.reload();
+           window.location.reload();
             
         }
         action.resetForm();

@@ -3,198 +3,104 @@ import { Link, useNavigate } from "react-router-dom";
 import image from "../../styles/image.webp";
 import TopPost from "./topPost";
 import Topic from "./topic";
+import axios from "axios";
+import rehypeRaw from "rehype-raw";
+import ReactMarkdown from "react-markdown";
+import DisplayDate from "../displayDate";
 
 
 function PostList() {
 
   const navigate = useNavigate();
-  const [posts , setPosts ] = useState('')
+  const [posts , setPosts ] = useState([])
   const [searchText , setSearchText] = useState('');
   const [filterDate , setFilterDate] =useState('');
-  const [filterAuthor , setFilterAuthor] = useState('');
+  // const [filterAuthor , setFilterAuthor] = useState('');
+  const [authors , setAuthors] = useState([])
   const [loading , setLoading] = useState(true);
 
+  useEffect(() => {
+    fetchAuthors()
+    fetchPosts()
+    setLoading(false)
+  
+}, [])
 
-  const fetchPosts = async() =>{
-      const res = await fetch("/getPosts" , {
-          method:"GET" ,
-          headers:{
-              "Content-Type":"application/json",
-              // "id":id
-          }
-      });
+//searchText , filterAuthor , filterDate
 
-      const result = await  res.json();
-      setPosts(result);
-      setLoading(false);
+  const fetchPosts = () =>{
+    axios.get('http://127.0.0.1:3000/posts/all')
+    .then((response) => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
+  }
+
+  const fetchAuthors = () =>{
+    axios.get('http://127.0.0.1:3000/author/showAll')
+    .then((response) => {
+      setAuthors(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
   }
 
 
+ 
 
-const postss = [
-    {
-      id:"1",
-      Title: "Special Report: Extreme Heat and Human Health",
-      Author: "John Doe",
-      Date: "August 3, 2023",
-      Time: "19 min",
-      Topic: "Science",
-      FeaturedImage: image,
-      postData:
-        "Excessive heat is pushing the limits of human tolerability. In more than a dozen articles, Wise & Well examines how hot is too hot...",
-    },
-    {
-      id:"2",
-      Title: "Sample Post 2",
-      Author: "John Smith",
-      Date: "August 3, 2023",
-      Time: "12 min",
-      Topic: "College",
-      FeaturedImage: image,
-      postData: "This is the content of Sample Post 2...",
-    },
-    {
-      id:"3",
-      Title: "Sample Post 3",
-      Author: "John Hello",
-      Date: "August 3, 2023",
-      Time: " 10 min",
-      Topic: "Environment",
-      FeaturedImage: image,
-      postData: "This is the content of Sample Post 3...",
-    },
-    {
-      id:"2",
-      Title: "Sample Post 2",
-      Author: "John Smith",
-      Date: "August 3, 2023",
-      Time: "12 min",
-      Topic: "College",
-      FeaturedImage: image,
-      postData: "This is the content of Sample Post 2...",
-    },
-    {
-      id:"3",
-      Title: "Sample Post 3",
-      Author: "John Hello",
-      Date: "August 3, 2023",
-      Time: " 10 min",
-      Topic: "Environment",
-      FeaturedImage: image,
-      postData: "This is the content of Sample Post 3...",
-    }
-  ]
-
-
-
-  useEffect(() => {
-    setPosts(postss)
-    setLoading(false)
-
-  // fetchPosts()
-  
-}, [searchText , filterAuthor , filterDate])
 
 
 
   const handleSearch = async(e)=>{
     setSearchText(e.target.value)
-    //POST REQUEST API call for the search with the particular search text
-
-
-    const expt = await fetch("/searchHandle" ,{
-              method:"POST" ,
-              headers:{
-                  "Content-Type":"application/json"
-              },
-              body:JSON.stringify({searchText})
-            });
-          
-            const data = await expt.json();
-            
-            if(data.status === 501 || !data)
-            {
-              window.alert("Invalid Credentials");
-              console.log("Invalid Credentials");
-          }
-              if(data.error){
-                window.alert("Invalid Credentials")
-              }
-            else
-            {
-               setPosts(data); 
-            }
-
-
-    // the response for the GET API lets say data  --->   setPost(data);
-
+    await axios.get(`http://127.0.0.1:3000/posts/search?search=${searchText}`)
+    .then((response) => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
   }
 
   const handleFilterAuthor = async(e)=>{
-    setFilterAuthor(e.target.value)
-    //POST REQUEST API call for the filter with the particular filter tag
-    // the response for the POST API lets say data  --->   setPost(data);
 
-
-    const expt = await fetch("/filterAuthor" ,{
-      method:"POST" ,
-      headers:{
-          "Content-Type":"application/json"
-      },
-      body:JSON.stringify({filterAuthor})
-    });
-  
-    const data = await expt.json();
-    
-    if(data.status === 501 || !data)
-    {
-      window.alert("Invalid Credentials");
-      console.log("Invalid Credentials");
+    await axios.get(`http://127.0.0.1:3000/get/post/author/${e.target.value}`)
+    .then((response) => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
   }
-      if(data.error){
-        window.alert("Invalid Credentials")
-      }
-    else
-    {
-       setPosts(data); 
-    }
 
-
-
-
-
+  const handleFilterLikeComment = async(e)=>{
+    await axios.get(`http://127.0.0.1:3000/get/post/filter/likesAndComments/${e.target.value}`)
+    .then((response) => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
   }
 
   const handleFilterDate = async(e)=>{
     setFilterDate(e.target.value)
-    // POST REQUEST API call for the filter with the particular filter tag
-
-    // the response for the POST API lets say data  --->   setPost(data);
-
-    const expt = await fetch("/filterDate" ,{
-      method:"POST" ,
-      headers:{
-          "Content-Type":"application/json"
-      },
-      body:JSON.stringify({filterDate})
-    });
-  
-    const data = await expt.json();
-    
-    if(data.status === 501 || !data)
-    {
-      window.alert("Invalid Credentials");
-      console.log("Invalid Credentials");
-  }
-      if(data.error){
-        window.alert("Invalid Credentials")
-      }
-    else
-    {
-       setPosts(data); 
-    }
-
-
+    await axios.get(`http://127.0.0.1:3000/get/post/filter/date/${e.target.value}`)
+    .then((response) => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching posts:', error);
+    })
   }
 
 
@@ -203,7 +109,7 @@ const postss = [
     return <>Loading...</>
 
 
-console.log(posts);
+console.log(posts)
 
 
   return (
@@ -213,12 +119,39 @@ console.log(posts);
    <TopPost/>
    </div>
     </div>
-      <div className="flex max-sm:flex-wrap max-sm:justify-start max-sm:full  max-sm:m-5 justify-center m-10 ml-28 mr-28 p-5 max-sm:ml-0 max-sm:mr-0 bg-blue-200">
+      <div className="flex max-sm:flex-wrap max-sm:justify-start max-sm:full  max-sm:m-5 
+      justify-center m-10 ml-28 mr-28 p-5 max-sm:ml-0
+       max-sm:mr-0 border-2 rounded-2xl border-gray-400 hover:border-blue-500">
         <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-1/3 max-sm:w-2/3 max-sm:p-3 max-sm:m-2  text-2xl m-10 border-none" value={searchText} onChange={handleSearch} type="text" placeholder="Search..." />
-        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 max-sm:w-1/3 max-sm:p-2 max-sm:m-2  text-2xl m-10 border-none" value={filterAuthor} onChange={handleFilterAuthor} type="text" placeholder="Filter by Author..." />
+        <select
+              className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 
+              max-sm:w-1/3 max-sm:p-2 max-sm:m-2  text-2xl m-10 border-none" 
+             onChange={handleFilterAuthor} 
+               placeholder="Filter by Author..."
+            >
+              <option value=''>Filter by Author</option>
+              {authors.map((author) => (
+                <option key={author.id} value={author.id}>
+                  {author.name}
+                </option>
+              ))}
+            </select>
         <div className="flex justify-center items-center">
         <span className="text-blue-900 text-xl max-sm:text-lg font-bold">Filter by date: </span>
-        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 max-sm:w-full max-sm:p-2 max-sm:m-2  text-2xl m-10 border-none"  value={filterDate} onChange={handleFilterDate} type="date" placeholder="Filter by Date..." />
+        <input className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 
+        max-sm:w-full max-sm:p-2 max-sm:m-2  text-2xl m-10 border-none"  
+        value={filterDate} onChange={handleFilterDate} 
+        type="date" placeholder="Filter by Date..." />
+        <select
+              className="p-5 rounded-lg shadow-lg shadow-gray-400 w-72 
+              max-sm:w-1/3 max-sm:p-2 max-sm:m-2  text-2xl m-10 border-none" 
+             onChange={handleFilterLikeComment} 
+               placeholder="Filter by Like and Comment..."
+            >
+              <option value=''>Filter by ...</option>
+                <option  value='likes'> Likes   </option>
+                <option  value='comments'> Comments   </option>
+            </select>
         </div>
       </div>
 
@@ -231,22 +164,26 @@ console.log(posts);
           <div className="flex flex-col max-sm:m-5 max-sm:mr-0 justify-center items-start mr-10 ">
           {posts.map((post) => {
             return (
-              <Link to ={post.id} className="flex max-sm:flex-col-reverse p-10 max-sm:p-5 justify-center items-center w-full  mb-8 bg-gray-100 shadow-md shadow-gray-300  hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95">
+              <Link to ={`/${post.id}`} className="flex max-sm:flex-col-reverse p-10 max-sm:p-5 justify-center items-center w-full  mb-8 bg-gray-100 shadow-md shadow-gray-300  hover:bg-purple-200 hover:ease-in duration-300 hover:scale-95">
                 <div className="p-4 m-4 rounded-md w-full">
                   <div className="p-2 font-bold text-2xl max-sm:text-xl text-gray-600 max-sm:p-0">
-                    <h2>{post.Author}</h2>
+                    <h2>{post.author_name}</h2>
                   </div>
                   <div className="w-full text-left pr-10 max-sm:pr-0">
-                    <h1 className="font-bold text-4xl max-sm:text-3xl">{post.Title}</h1>
+                    <h1 className="font-bold text-4xl max-sm:text-3xl">{post.title}</h1>
                   </div>
-                  <div className="w-full text-justify mt-1 mb-1 max-sm:mt-2 max-sm:mb-0 max-sm:h-12 pr-10 h-16">
-                    <p className="text-gray-600 max-sm:text-2xl">{post.postData}</p>
+                  <div className="w-full text-justify mt-1 mb-1 max-sm:mt-2 max-sm:mb-0 max-sm:h-12 pr-10 h-16 overflow-hidden">
+                    <p className="text-gray-600 max-sm:text-2xl"><ReactMarkdown rehypePlugins={[rehypeRaw]}>{post.text}</ReactMarkdown></p>
                   </div>
 
                   <div className="w-full mt-16">
-                    <span className="mr-3 font-light">{post.Date}</span>
-                    <span className="mr-3 font-light">{post.Time}</span>
-                    <span className="mr-3 font-bold text-blue-500">{post.Topic}</span>
+                    <span className="mr-3 font-light"> <DisplayDate publishedAt={post.published_at} /></span>
+                    <span className="mr-3 font-light">{post.reading_time} min</span>
+                    <span className="mr-3 font-bold text-blue-500">{post.topic}</span>
+                    <span className="mr-10 ml-10 font-bold text-2xl text-red-500">
+                      <i class="fa fa-thumbs-up mr-1"></i> {post.likes_count}</span>
+                    <span className="mr-3 text-2xl font-bold text-green-500">
+                    <i class="fa fa-comment mr-1"></i> {post.comments_count}</span>
                   </div>
                 </div>
 
@@ -254,7 +191,7 @@ console.log(posts);
                   <div className="w-full flex justify-center items-center overflow-hidden">
                     <img
                       className="min-w-2/3 h-64 flex-shrink-0 rounded-lg"
-                      src={post.FeaturedImage}
+                      src={post.image}
                       alt="featurePhoto"
                     />
                   </div>

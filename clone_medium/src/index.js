@@ -17,6 +17,9 @@ import QuickLinkPage from './components/profile/quickLinkPage';
 import EditPost from './components/post/editPost';
 import ProtectedRoute from './components/protected_route/protectRoute';
 import PaymentProtect from './components/protected_route/paymentProtect'
+import Payment from './components/home/Payment';
+import EditDraft from './components/post/editDraft';
+import Playlist from './components/playlist/playlist';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -33,9 +36,12 @@ root.render(
         <Route path="/" element={<App/>}/>
         <Route path='/topiclist/:topic' element = {<TopicList/>}/>
         <Route path='/profile/:author' element = {<OthersProfile/>}/>
-        <Route path='/editPost' element = {<EditPost/>}/>
+        <Route path='/editPost/:postId' element = {<EditPost/>}/>
         <Route exact path='/' element={<ProtectedRoute/>}>
           <Route path='/profile' element = {<Profile/>}/>
+        </Route>
+        <Route exact path='/' element={<ProtectedRoute/>}>
+          <Route path='/draft/edit/:draft_id' element = {<EditDraft/>}/>
         </Route>
         <Route path='/signin' element = {<SignIn/>}/>
         <Route path='/signup' element = {<SignUp/>}/>
@@ -45,9 +51,11 @@ root.render(
         <Route exact path='/' element={<PaymentProtect/>}>
           <Route path='/:id' element={<PostDetail/>}/>
         </Route>
+        
        <Route exact path='/' element={<ProtectedRoute/>}>
           <Route exact path='/:userId/:link' element={<QuickLinkPage/>}/>
         </Route>
+        <Route path='/payment' element = {<Payment/>} />
       </Routes>
      </div>
     </BrowserRouter>
